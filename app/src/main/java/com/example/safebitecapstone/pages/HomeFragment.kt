@@ -1,5 +1,6 @@
 package com.example.safebitecapstone.pages
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -7,17 +8,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.safebitecapstone.ListAlergenAdapter
 import com.example.safebitecapstone.R
+import com.example.safebitecapstone.SessionPreferences
 import com.example.safebitecapstone.databinding.FragmentHomeBinding
 import com.example.safebitecapstone.dummyData.Alergen
+import com.example.safebitecapstone.model.LoginViewModel
+import com.example.safebitecapstone.model.factory.LoginViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-
 
 class HomeFragment : Fragment() {
 

@@ -1,6 +1,7 @@
 package com.example.safebitecapstone.pages
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,8 +10,15 @@ import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.example.safebitecapstone.R
+import com.example.safebitecapstone.SessionPreferences
 import com.example.safebitecapstone.databinding.ActivityLoginBinding
+import com.example.safebitecapstone.model.LoginViewModel
+import com.example.safebitecapstone.model.factory.LoginViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -21,12 +29,17 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
 
+    private val loginViewModel: LoginViewModel by viewModels {
+        LoginViewModelFactory.getInstance(SessionPreferences.getInstance(dataStore))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -68,6 +81,10 @@ class LoginActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)!!
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
                 firebaseAuthWithGoogle(account.idToken!!)
+
+//                save user token when login
+                loginViewModel.userToken(account.idToken!!)
+
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
