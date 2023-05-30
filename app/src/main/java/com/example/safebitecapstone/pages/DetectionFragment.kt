@@ -74,12 +74,16 @@ class DetectionFragment : Fragment() {
             }
             else{
                 Toast.makeText(activity, "Allow all permissions before continue", Toast.LENGTH_SHORT).show()
-//                requestPermission()
             }
         }
 
         binding.buttonPhoto.setOnClickListener {
-
+            if(checkPermission()){
+                pickFromCamera()
+            }
+            else{
+                Toast.makeText(activity, "Allow all permissions before continue", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.buttonDetect.setOnClickListener {
@@ -101,6 +105,8 @@ class DetectionFragment : Fragment() {
             startActivity(intent)
         }
 
+
+
         binding.buttonCancel.setOnClickListener {
             binding.buttonDetect.visibility = View.GONE
             binding.buttonCancel.visibility = View.GONE
@@ -110,6 +116,7 @@ class DetectionFragment : Fragment() {
             binding.buttonProcess.visibility = View.GONE
             binding.resultScan.visibility = View.GONE
             binding.progressBar.visibility = View.GONE
+            binding.loadingInformation.visibility = View.GONE
             binding.photoPlaceholder.setImageResource(R.drawable.img_placeholder)
         }
 
@@ -155,7 +162,8 @@ class DetectionFragment : Fragment() {
 
                     var bm = imageResult.get()
 
-                    imageUri = context?.let { saveImage(bm, it) }!!
+//                    imageUri = context?.let { saveImage(bm, it) }!!
+                    imageUri = saveImage(bm, requireContext())
                     launchImageCrop(imageUri)
                 }
             }
@@ -191,8 +199,6 @@ class DetectionFragment : Fragment() {
     }
 
     private fun saveEditedImage() {
-
-
         bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, finalUri)
 //        processImage()
 //        saveMediaToStorage(bitmap!!)
@@ -210,7 +216,8 @@ class DetectionFragment : Fragment() {
             image?.compress(Bitmap.CompressFormat.JPEG,100,stream)
             stream.flush()
             stream.close()
-            uri= FileProvider.getUriForFile(context.applicationContext,"com.sunayanpradhan.imagecropper"+".provider",file)
+//            uri= FileProvider.getUriForFile(context.applicationContext,"com.sunayanpradhan.imagecropper"+".provider",file)
+            uri= FileProvider.getUriForFile(requireContext().applicationContext,"com.example.safebitecapstone.provider",file)
 
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
@@ -245,7 +252,6 @@ class DetectionFragment : Fragment() {
                 recognizer.process(it)
                     .addOnSuccessListener { visionText ->
                         binding.resultScan.text = visionText.text
-                        println("Nilai visionText " + visionText.text)
                     }
                     .addOnFailureListener { e ->
                     }

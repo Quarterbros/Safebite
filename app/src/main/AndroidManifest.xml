@@ -55,6 +55,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+<!--        fix error couldn't find meta-data-->
+
+        <provider
+            android:authorities="com.example.safebitecapstone.provider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/fileproviderpaths">
+
+            </meta-data>
+
+        </provider>
+
     </application>
 
 </manifest>
