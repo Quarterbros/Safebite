@@ -84,4 +84,10 @@ dependencies {
 //    Viewmodel and Livedata
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
+
+//    CameraX
+    def camerax_version = "1.2.2"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.camera:camera-view:${camerax_version}"
 }

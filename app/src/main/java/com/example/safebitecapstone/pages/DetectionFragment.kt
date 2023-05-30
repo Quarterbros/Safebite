@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
@@ -23,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
+import com.example.safebitecapstone.CameraActivity
 import com.example.safebitecapstone.R
 import com.example.safebitecapstone.databinding.FragmentDetectionBinding
 import com.google.mlkit.vision.common.InputImage
@@ -39,6 +42,13 @@ import java.util.*
 class DetectionFragment : Fragment() {
 
     val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+
+    companion object {
+        const val CAMERA_X_RESULT = 200
+
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        private const val REQUEST_CODE_PERMISSIONS = 10
+    }
 
     private val GALLERY_REQUEST_CODE = 1234
     private val WRITE_EXTERNAL_STORAGE_CODE = 1
@@ -145,11 +155,8 @@ class DetectionFragment : Fragment() {
         activityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
                 if (result.resultCode == AppCompatActivity.RESULT_OK) {
-
                     var extras: Bundle? = result.data?.extras
-
                     var imageUri: Uri
-
                     var imageBitmap = extras?.get("data") as Bitmap
 
                     var imageResult: WeakReference<Bitmap> = WeakReference(
@@ -237,11 +244,34 @@ class DetectionFragment : Fragment() {
     }
 
     private fun pickFromCamera(){
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        activityResultLauncher.launch(intent)
+//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        activityResultLauncher.launch(intent)
+        val intent = Intent(activity, CameraActivity::class.java)
+        launcherIntentCameraX.launch(intent)
     }
 
 
+    private val launcherIntentCameraX = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == CAMERA_X_RESULT) {
+            val myFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.data?.getSerializableExtra("picture", File::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                it.data?.getSerializableExtra("picture")
+            } as? File
+
+//            val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
+
+            myFile?.let { file ->
+                var imageUri: Uri = saveImage(BitmapFactory.decodeFile(file.path), requireContext())
+                launchImageCrop(imageUri)
+//                    rotateFile(file, isBackCamera)
+//                binding.photoPlaceholder.setImageBitmap(BitmapFactory.decodeFile(file.path))
+            }
+        }
+    }
     private fun processImage(){
         if (bitmap!=null) {
             val image = bitmap?.let {
