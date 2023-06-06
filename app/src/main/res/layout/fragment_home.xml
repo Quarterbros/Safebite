@@ -47,7 +47,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <de.hdodenhof.circleimageview.CircleImageView
@@ -79,6 +79,17 @@
                             android:textColor="@color/black"
                             app:layout_constraintStart_toEndOf="@+id/img_item_photo"
                             app:layout_constraintTop_toBottomOf="@+id/nama_pengguna" />
+
+                        <ImageView
+                            android:id="@+id/logoutButton"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/baseline_logout_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/red_warning" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 

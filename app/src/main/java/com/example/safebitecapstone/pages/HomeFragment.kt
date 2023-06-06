@@ -1,6 +1,7 @@
 package com.example.safebitecapstone.pages
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
@@ -25,16 +27,30 @@ import com.example.safebitecapstone.SessionPreferences
 import com.example.safebitecapstone.databinding.FragmentHomeBinding
 import com.example.safebitecapstone.dummyData.Alergen
 import com.example.safebitecapstone.model.LoginViewModel
+import com.example.safebitecapstone.model.MainViewModel
 import com.example.safebitecapstone.model.factory.LoginViewModelFactory
+import com.example.safebitecapstone.model.factory.MainViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     //    Apus kalo udah ada API
     private lateinit var rvAlergen: RecyclerView
     private val list = ArrayList<Alergen>()
+
+    private val mainViewModel: MainViewModel by viewModels {
+        MainViewModelFactory.getInstance(requireContext(), SessionPreferences.getInstance(requireContext().dataStore))
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -49,7 +65,44 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        auth = Firebase.auth
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setMessage("Are you sure to log out ?")
+            .setPositiveButton("Log Out",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // START THE GAME!
+                    signOut()
+                    dialog.dismiss()
+                })
+            .setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // User cancelled the dialog
+                    dialog.cancel()
+                })
+        // Create the AlertDialog object and return it
+        builder.create()
+
         rvAlergen = binding.alergenItems
+
+        binding.logoutButton.setOnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setMessage("Are you sure to log out ?")
+                .setPositiveButton("Log Out",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        // START THE GAME!
+                        signOut()
+                        mainViewModel.logout()
+                        dialog.dismiss()
+                    })
+                .setNegativeButton("Cancel",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        // User cancelled the dialog
+                        dialog.cancel()
+                    })
+            // Create the AlertDialog object and return it
+            builder.create().show()
+        }
 
         binding.buttonBanyakAlergen.setOnClickListener {
             val intent = Intent(activity, EditAlergenActivity::class.java)
@@ -78,11 +131,11 @@ class HomeFragment : Fragment() {
             val personId = acct.id
             val personPhoto: Uri? = acct.photoUrl
 
-            println("personName : $personName")
-            println("personGiven : $personGivenName")
-            println("personPhoto : $personPhoto")
-            binding.namaPengguna.text = personGivenName
+//            println("personName : $personName")
+//            println("personGiven : $personGivenName")
+//            println("personPhoto : $personPhoto")
 
+            binding.namaPengguna.text = personGivenName
             Glide.with(requireContext())
                 .load(personPhoto)
                 .into(binding.imgItemPhoto)
@@ -107,5 +160,19 @@ class HomeFragment : Fragment() {
         binding.alergenItems.layoutManager = LinearLayoutManager(activity)
         val listAlergenAdapter = ListAlergenAdapter(list)
         binding.alergenItems.adapter = listAlergenAdapter
+    }
+
+    private fun signOut() {
+        val gso = GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = activity?.let { GoogleSignIn.getClient(it, gso) }!!
+
+        auth.signOut()
+        googleSignInClient.signOut()
+        val intent = Intent(activity, LoginActivity::class.java)
+        startActivity(intent)
     }
 }

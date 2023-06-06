@@ -1,7 +1,9 @@
 package com.example.safebitecapstone.pages
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.safebitecapstone.AddAlergenActivity
 import com.example.safebitecapstone.databinding.ActivityEditAlergenBinding
 import com.example.safebitecapstone.databinding.ActivityMainBinding
 
@@ -15,5 +17,9 @@ class EditAlergenActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.title = "My Alergens"
+
+        binding.fabAdd.setOnClickListener {
+            startActivity(Intent(this@EditAlergenActivity, AddAlergenActivity::class.java))
+        }
     }
 }

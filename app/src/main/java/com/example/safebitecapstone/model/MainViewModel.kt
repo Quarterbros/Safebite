@@ -16,6 +16,7 @@ class MainViewModel (private val sessionPreferences: SessionPreferences) : ViewM
     }
 
     fun logout() {
+        println("Aku Log out")
         viewModelScope.launch(Dispatchers.IO) {
             sessionPreferences.deleteToken()
         }
