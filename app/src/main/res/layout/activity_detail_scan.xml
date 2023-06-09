@@ -20,47 +20,47 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
-        <LinearLayout
-            android:id="@+id/consume_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/photoDetail">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/consume_layout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="16dp"-->
+<!--            android:layout_marginTop="24dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/photoDetail">-->
 
-            <ImageView
-                android:id="@+id/consume_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/baseline_check_circle_24"
-                app:tint="@color/green_stardar" />
+<!--            <ImageView-->
+<!--                android:id="@+id/consume_icon"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:src="@drawable/baseline_check_circle_24"-->
+<!--                app:tint="@color/green_stardar" />-->
 
-            <TextView
-                android:id="@+id/consume_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="You can consume it"
-                android:textColor="@color/green_stardar"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/consume_text"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:text="You can consume it"-->
+<!--                android:textColor="@color/green_stardar"-->
+<!--                android:textSize="16sp"-->
+<!--                android:textStyle="bold" />-->
+<!--        </LinearLayout>-->
 
         <TextView
             android:id="@+id/hallal_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:text="Hallal"
+            android:layout_marginTop="32dp"
+            android:text="Hallal Identification"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/consume_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/photoDetail" />
 
         <TextView
             android:id="@+id/hallal_desc"
@@ -74,12 +74,12 @@
             app:layout_constraintTop_toBottomOf="@+id/hallal_title" />
 
         <TextView
-            android:id="@+id/alergen_title"
+            android:id="@+id/allergies_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            android:text="Ingredients to avoid"
+            android:text="Potential Allergies"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -87,18 +87,45 @@
             app:layout_constraintTop_toBottomOf="@+id/hallal_desc" />
 
         <TextView
-            android:id="@+id/alergen_desc"
+            android:id="@+id/allergies_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:text="There is no ingridient to be avoided"
+            android:text="No Potential Disease Detected"
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/alergen_title" />
+            app:layout_constraintTop_toBottomOf="@+id/allergies_title" />
+
+        <TextView
+            android:id="@+id/disease_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="Potential Disease"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/allergies_desc" />
+
+        <TextView
+            android:id="@+id/disease_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="No Potential Disease Detected"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/disease_title" />
 
         <TextView
             android:id="@+id/ingridient_title"
@@ -111,7 +138,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/alergen_desc" />
+            app:layout_constraintTop_toBottomOf="@+id/disease_desc" />
 
         <TextView
             android:id="@+id/ingridient_desc"

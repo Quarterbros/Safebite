@@ -18,17 +18,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.safebitecapstone.ListAlergenAdapter
 import com.example.safebitecapstone.R
 import com.example.safebitecapstone.SessionPreferences
 import com.example.safebitecapstone.databinding.FragmentHomeBinding
-import com.example.safebitecapstone.dummyData.Alergen
-import com.example.safebitecapstone.model.LoginViewModel
 import com.example.safebitecapstone.model.MainViewModel
-import com.example.safebitecapstone.model.factory.LoginViewModelFactory
 import com.example.safebitecapstone.model.factory.MainViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -44,9 +38,6 @@ class HomeFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
-    //    Apus kalo udah ada API
-    private lateinit var rvAlergen: RecyclerView
-    private val list = ArrayList<Alergen>()
 
     private val mainViewModel: MainViewModel by viewModels {
         MainViewModelFactory.getInstance(requireContext(), SessionPreferences.getInstance(requireContext().dataStore))
@@ -83,7 +74,6 @@ class HomeFragment : Fragment() {
         // Create the AlertDialog object and return it
         builder.create()
 
-        rvAlergen = binding.alergenItems
 
         binding.logoutButton.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
@@ -104,63 +94,28 @@ class HomeFragment : Fragment() {
             builder.create().show()
         }
 
-        binding.buttonBanyakAlergen.setOnClickListener {
-            val intent = Intent(activity, EditAlergenActivity::class.java)
+        binding.buttonHowItWork.setOnClickListener {
+            val intent = Intent(activity, HowItWorksActivity::class.java)
             startActivity(intent)
         }
 
-        binding.buttonEdit.setOnClickListener {
-            val intent = Intent(activity, EditAlergenActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding.buttonHalal.setOnClickListener {
-            val intent = Intent(activity, EditHalalActivity::class.java)
-            startActivity(intent)
-        }
-
-        list.addAll(getListAlergen())
-        showRecyclerList()
 
         val acct = GoogleSignIn.getLastSignedInAccount(requireContext())
         if (acct != null) {
-            val personName = acct.displayName
             val personGivenName = acct.givenName
-            val personFamilyName = acct.familyName
             val personEmail = acct.email
-            val personId = acct.id
             val personPhoto: Uri? = acct.photoUrl
 
-//            println("personName : $personName")
-//            println("personGiven : $personGivenName")
-//            println("personPhoto : $personPhoto")
-
             binding.namaPengguna.text = personGivenName
+            binding.emailPengguna.text = personEmail
+
             Glide.with(requireContext())
                 .load(personPhoto)
                 .into(binding.imgItemPhoto)
         }
     }
 
-    private fun getListAlergen(): ArrayList<Alergen> {
-        val dataTitle = resources.getStringArray(R.array.data_title)
-        val dataDescription = resources.getStringArray(R.array.data_description)
-        val dataPhoto = resources.obtainTypedArray(R.array.data_photo)
 
-        val listAlergen = ArrayList<Alergen>()
-
-        for (i in dataTitle.indices) {
-            val alergen = Alergen(dataTitle[i], dataDescription[i], dataPhoto.getResourceId(i, -1))
-            listAlergen.add(alergen)
-        }
-        return listAlergen
-    }
-
-    private fun showRecyclerList() {
-        binding.alergenItems.layoutManager = LinearLayoutManager(activity)
-        val listAlergenAdapter = ListAlergenAdapter(list)
-        binding.alergenItems.adapter = listAlergenAdapter
-    }
 
     private fun signOut() {
         val gso = GoogleSignInOptions

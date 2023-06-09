@@ -7,22 +7,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.safebitecapstone.ListAlergenAdapter
 import com.example.safebitecapstone.R
+import com.example.safebitecapstone.SessionPreferences
 import com.example.safebitecapstone.databinding.FragmentHistoryBinding
 import com.example.safebitecapstone.databinding.FragmentHomeBinding
 import com.example.safebitecapstone.dummyData.Alergen
+import com.example.safebitecapstone.helper.HistoryAdapter
+import com.example.safebitecapstone.model.HistoryViewModel
+import com.example.safebitecapstone.model.MainViewModel
+import com.example.safebitecapstone.model.factory.HistoryViewModelFactory
+import com.example.safebitecapstone.model.factory.MainViewModelFactory
 
 class HistoryFragment : Fragment() {
 
     private lateinit var binding: FragmentHistoryBinding
+    private lateinit var adapter: HistoryAdapter
 
-    //    Apus kalo udah ada API
-    private lateinit var rvAlergen: RecyclerView
-    private val list = ArrayList<Alergen>()
+    private val historyViewModel: HistoryViewModel by viewModels {
+        HistoryViewModelFactory.getInstance(requireActivity().application)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHistoryBinding.inflate(inflater, container, false)
@@ -32,34 +40,38 @@ class HistoryFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+
+        binding?.historyItems?.layoutManager = LinearLayoutManager(requireContext())
+        binding?.historyItems?.setHasFixedSize(true)
+        binding?.historyItems?.adapter = adapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rvAlergen = binding.alergenItems
-        list.addAll(getListAlergen())
-        showRecyclerList()
-    }
+        adapter = HistoryAdapter()
+        binding.historyItems.visibility = View.VISIBLE
+        binding.noDetectionText.visibility = View.GONE
+        historyViewModel.getAllDetection().observe(viewLifecycleOwner){items ->
+            if(items.isNotEmpty()){
+                println("nilai dari items : $items")
 
-    private fun getListAlergen(): ArrayList<Alergen> {
-        val dataTitle = resources.getStringArray(R.array.data_title)
-        val dataDescription = resources.getStringArray(R.array.data_description)
-        val dataPhoto = resources.obtainTypedArray(R.array.data_photo)
-
-        val listAlergen = ArrayList<Alergen>()
-
-        for (i in dataTitle.indices) {
-            val alergen = Alergen(dataTitle[i], dataDescription[i], dataPhoto.getResourceId(i, -1))
-            listAlergen.add(alergen)
+                binding.historyItems.visibility = View.VISIBLE
+                binding.noDetectionText.visibility = View.GONE
+                adapter.setListDetection(items)
+            }
+            else{
+                println("Kosong")
+                binding.historyItems.visibility = View.GONE
+                binding.noDetectionText.visibility = View.VISIBLE
+            }
         }
-        return listAlergen
+
+
+        binding?.historyItems?.layoutManager = LinearLayoutManager(requireContext())
+        binding?.historyItems?.setHasFixedSize(true)
+        binding?.historyItems?.adapter = adapter
     }
 
-    private fun showRecyclerList() {
-        binding.alergenItems.layoutManager = LinearLayoutManager(activity)
-        val listAlergenAdapter = ListAlergenAdapter(list)
-        binding.alergenItems.adapter = listAlergenAdapter
-    }
 
 }

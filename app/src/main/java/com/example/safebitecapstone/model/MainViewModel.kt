@@ -10,6 +10,9 @@ import kotlinx.coroutines.launch
 
 class MainViewModel (private val sessionPreferences: SessionPreferences) : ViewModel(){
 
+
+
+
     //    Buat cek kalo udah login ga usah relog
     fun userIsLogin(): LiveData<String> {
         return sessionPreferences.getToken().asLiveData()

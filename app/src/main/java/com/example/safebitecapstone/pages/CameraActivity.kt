@@ -1,4 +1,4 @@
-package com.example.safebitecapstone
+package com.example.safebitecapstone.pages
 
 import android.app.Application
 import android.content.Intent
@@ -14,9 +14,8 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
+import com.example.safebitecapstone.R
 import com.example.safebitecapstone.databinding.ActivityCameraBinding
-import com.example.safebitecapstone.pages.DetectionFragment
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*

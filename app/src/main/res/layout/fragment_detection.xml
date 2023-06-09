@@ -117,7 +117,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:strokeColor="@color/green_stardar"
-            app:strokeWidth="3dp"
+            app:strokeWidth="2dp"
             app:cornerRadius="8dp" />
 
         <Button

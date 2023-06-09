@@ -25,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
-import com.example.safebitecapstone.CameraActivity
 import com.example.safebitecapstone.R
 import com.example.safebitecapstone.databinding.FragmentDetectionBinding
 import com.google.mlkit.vision.common.InputImage

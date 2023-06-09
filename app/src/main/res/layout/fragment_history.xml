@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/alergen_items"
+            android:id="@+id/history_items"
             android:overScrollMode="never"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,8 +34,22 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/title"
             tools:listitem="@layout/alergen_item" />
+
+        <TextView
+            android:id="@+id/no_detection_text"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="It seems you don't have any detection history"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="italic"
+            android:alpha="0.7"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
