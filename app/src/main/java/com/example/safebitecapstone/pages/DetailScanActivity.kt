@@ -1,22 +1,16 @@
 package com.example.safebitecapstone.pages
 
 import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import com.example.safebitecapstone.R
-import com.example.safebitecapstone.SessionPreferences
 import com.example.safebitecapstone.database.Detection
 import com.example.safebitecapstone.databinding.ActivityDetailScanBinding
-import com.example.safebitecapstone.databinding.ActivityMainBinding
 import com.example.safebitecapstone.model.DetectionDataLocalViewModel
-import com.example.safebitecapstone.model.LoginViewModel
 import com.example.safebitecapstone.model.factory.HistoryViewModelFactory
-import com.example.safebitecapstone.model.factory.LoginViewModelFactory
+
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 
 class DetailScanActivity : AppCompatActivity() {
@@ -33,8 +27,10 @@ class DetailScanActivity : AppCompatActivity() {
         binding = ActivityDetailScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Detail Product"
+
+//        supportActionBar?.title = "Detail $dataTitle"
 
 
         val img : Uri? = intent.getParcelableExtra(EXTRA_IMG)
@@ -48,14 +44,27 @@ class DetailScanActivity : AppCompatActivity() {
         println("Ingridients : $stringBuilder")
 
 
+        var dataHalal = intent.getStringExtra(EXTRA_HALAL)
+        var dataDisease = intent.getStringExtra(EXTRA_DISEASE)
+        var dataAllergy = intent.getStringExtra(EXTRA_ALLERGY)
+        var dataTitle = intent.getStringExtra(EXTRA_TITLE)
+
+
         detection = intent.getParcelableExtra(EXTRA_DATA)
         println("Cek is null $detection")
+
         if (detection == null){
             detection = Detection()
             binding.ingridientDesc.text = stringBuilder
+            supportActionBar?.title = "Detail $dataTitle"
+
+            if (dataHalal != null && dataDisease != null && dataAllergy != null){
+                setResultData(dataHalal, dataDisease, dataAllergy)
+            }
             dateScanned()
 
             detection.let {
+                detection?.name = dataTitle
                 detection?.timestamp = binding.timestampDesc.text.toString()
                 detection?.hallal = binding.hallalDesc.text.toString()
                 detection?.potentialAllergies = binding.allergiesDesc.text.toString()
@@ -64,10 +73,16 @@ class DetailScanActivity : AppCompatActivity() {
             }
             if (detection != null){
                 detectionDataLocalViewModel.insert(detection as Detection)
+//                postDetection(binding.ingridientDesc.text.toString())
+//                detectionDataLocalViewModel.insert(detection as Detection)
+//                postDetection("car")
             }
         }
+
+//        Ini buat ngeset value di halaman history
         else {
             detection.let {
+                supportActionBar?.title = "Detail ${detection!!.name}"
                 binding.photoDetail.setImageResource(R.drawable.baseline_fastfood_24)
                 binding?.hallalDesc?.setText(detection!!.hallal)
                 binding?.allergiesDesc?.setText(detection!!.potentialAllergies)
@@ -76,9 +91,6 @@ class DetailScanActivity : AppCompatActivity() {
                 binding?.timestampDesc?.setText(detection!!.timestamp)
             }
         }
-
-
-
 
     }
 
@@ -91,10 +103,67 @@ class DetailScanActivity : AppCompatActivity() {
         binding.timestampDesc.text = current
     }
 
+//    private fun postDetection(text: String) {
+//        showLoading(true)
+//
+//        val client = ApiConfig.getApiService().postDetection(DetectionPost(text))
+//        client.enqueue(object : Callback<DetectionResponse> {
+//            override fun onResponse(
+//                call: Call<DetectionResponse>,
+//                response: Response<DetectionResponse>
+//            ) {
+//                showLoading(false)
+//                val responseBody = response.body()
+//
+//                println("response.isSuccessful ${response.isSuccessful}")
+//                println("isi dari responseBody $responseBody")
+//
+//                if (response.isSuccessful && responseBody != null) {
+//                    setResultData(responseBody.result)
+//                } else {
+//                    Log.e(ContentValues.TAG, "onFailure: ${response.message()}")
+//                }
+//            }
+//            override fun onFailure(call: Call<DetectionResponse>, t: Throwable) {
+//                showLoading(false)
+//                Log.e(ContentValues.TAG, "onFailure: ${t.message}")
+//            }
+//        })
+//    }
+
+    private fun setResultData(valueHalal: String, valueAllergy: String, valueDisease: String) {
+        if (valueHalal == "Halal"){
+            binding.hallalDesc.text = "Yes, it's Hallal"
+        }
+        else if (valueHalal == "Haram"){
+            binding.hallalDesc.text = "No, it's Haram"
+        }
+        else{
+            binding.hallalDesc.text = "Sorry, we can't detect it"
+        }
+        binding.allergiesDesc.text = valueAllergy
+        binding.diseaseDesc.text = valueDisease
+    }
+
+//    private fun showLoading(isLoading: Boolean) {
+//        if (isLoading) {
+//            binding.progressBar.visibility = View.VISIBLE
+//        } else {
+//            binding.progressBar.visibility = View.GONE
+//        }
+//    }
+
+
+
 
     companion object {
         var EXTRA_INGRIDIENT = "extra_ingridient"
         var EXTRA_IMG = "extra_img"
         var EXTRA_DATA = "extra_data"
+
+        var EXTRA_HALAL = "extra_halal"
+        var EXTRA_ALLERGY = "extra_allergy"
+        var EXTRA_DISEASE = "extra_disease"
+        var EXTRA_TITLE = "extra_title"
     }
 }

@@ -12,6 +12,6 @@ interface DetectionDao {
     @Delete
     fun delete(detection: Detection)
 
-    @Query("SELECT * from detection ORDER BY id ASC")
+    @Query("SELECT * from detection ORDER BY timestamp DESC")
     fun getAllDetection(): LiveData<List<Detection>>
 }

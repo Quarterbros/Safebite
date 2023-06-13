@@ -27,15 +27,6 @@
             android:name=".pages.CameraActivity"
             android:exported="false" />
         <activity
-            android:name=".AddAlergenActivity"
-            android:exported="false" />
-        <activity
-            android:name=".pages.DetailAlergenActivity"
-            android:exported="false" />
-        <activity
-            android:name=".pages.EditHalalActivity"
-            android:exported="false" />
-        <activity
             android:name=".pages.DetailScanActivity"
             android:exported="false"
             android:parentActivityName=".pages.MainActivity" />
@@ -43,9 +34,6 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".pages.EditAlergenActivity"
-            android:exported="false" />
         <activity
             android:name=".pages.LoginActivity"
             android:exported="true">

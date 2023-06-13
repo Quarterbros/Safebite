@@ -37,9 +37,10 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
     inner class HistoryViewHolder(private val binding: AlergenItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(detection: Detection) {
             with(binding) {
-                println("Lewat binding")
-                tvTitle.text = "Scanned In ${detection.timestamp}"
-                println("ingridients ${detection.ingridient}")
+
+//                tvTitle.text = "Scanned In ${detection.timestamp}"
+                tvTitle.text = "${detection.name}"
+
                 cardView.setOnClickListener {
                     val intent = Intent(it.context, DetailScanActivity::class.java)
                     intent.putExtra(DetailScanActivity.EXTRA_DATA, detection)

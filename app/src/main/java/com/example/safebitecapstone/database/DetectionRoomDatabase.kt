@@ -17,7 +17,7 @@ abstract class DetectionRoomDatabase : RoomDatabase() {
             if (INSTANCE == null) {
                 synchronized(DetectionRoomDatabase::class.java) {
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
-                        DetectionRoomDatabase::class.java, "detection_database")
+                        DetectionRoomDatabase::class.java, "history_database")
                         .build()
                 }
             }

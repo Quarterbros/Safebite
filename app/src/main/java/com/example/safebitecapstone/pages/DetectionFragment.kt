@@ -2,6 +2,7 @@ package com.example.safebitecapstone.pages
 
 import android.Manifest
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,6 +14,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,12 +27,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
+import com.example.safebitecapstone.API.ApiConfig
+import com.example.safebitecapstone.API.DetectionPost
+import com.example.safebitecapstone.API.DetectionResponse
 import com.example.safebitecapstone.R
 import com.example.safebitecapstone.databinding.FragmentDetectionBinding
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.yalantis.ucrop.UCrop
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -56,7 +64,6 @@ class DetectionFragment : Fragment() {
 
     lateinit var finalUri: Uri
     var bitmap: Bitmap? = null
-    var scannedText: String? = null
 
     private lateinit var binding: FragmentDetectionBinding
 
@@ -102,17 +109,44 @@ class DetectionFragment : Fragment() {
             binding.progressBar.visibility = View.VISIBLE
             binding.buttonDetect.visibility = View.GONE
             binding.resultScan.visibility = View.GONE
-            binding.buttonProcess.visibility = View.VISIBLE
+
+
             binding.loadingInformation.visibility = View.VISIBLE
         }
 
-        binding.buttonProcess.setOnClickListener {
-            val intent = Intent(activity, DetailScanActivity::class.java)
-            val ingridient = binding.resultScan.text
-            intent.putExtra(DetailScanActivity.EXTRA_INGRIDIENT, ingridient.toString())
-            intent.putExtra(DetailScanActivity.EXTRA_IMG, finalUri)
-            startActivity(intent)
-        }
+
+
+        binding.editText.setText("Hai")
+
+        binding.editText.addTextChangedListener(object  : TextWatcher{
+            override fun beforeTextChanged(title: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+
+            }
+
+            override fun onTextChanged(title: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                println("value title ${title!!.isNotEmpty()} + panjangnya ${title.length}")
+
+                if (title!!.isNotEmpty()){
+                    binding.buttonProcess.isEnabled = true
+
+                    binding.buttonProcess.setOnClickListener {
+                        val ingridient = binding.resultScan.text
+                        postDetection(ingridient.toString())
+                    }
+                }
+
+                else{
+                    binding.buttonProcess.isEnabled = false
+                }
+            }
+
+            override fun afterTextChanged(title: Editable?) {
+
+            }
+
+        })
+
 
 
 
@@ -126,17 +160,18 @@ class DetectionFragment : Fragment() {
             binding.resultScan.visibility = View.GONE
             binding.progressBar.visibility = View.GONE
             binding.loadingInformation.visibility = View.GONE
+            binding.editText.visibility = View.GONE
             binding.photoPlaceholder.setImageResource(R.drawable.img_placeholder)
         }
 
         binding.resultScan.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(result: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
-
             override fun onTextChanged(result: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 if (result?.isEmpty() != true){
-                    binding.buttonProcess.isEnabled = true
+                    binding.buttonProcess.isEnabled = false
+                    binding.editText.visibility = View.VISIBLE
                     binding.progressBar.visibility = View.GONE
                     binding.buttonProcess.visibility = View.VISIBLE
                     binding.loadingInformation.visibility = View.GONE
@@ -145,10 +180,8 @@ class DetectionFragment : Fragment() {
                     binding.progressBar.visibility = View.VISIBLE
                 }
             }
-
             override fun afterTextChanged(result: Editable?) {
             }
-
         })
 
         activityResultLauncher =
@@ -165,10 +198,7 @@ class DetectionFragment : Fragment() {
                             Bitmap.Config.RGB_565, true
                         )
                     )
-
                     var bm = imageResult.get()
-
-//                    imageUri = context?.let { saveImage(bm, it) }!!
                     imageUri = saveImage(bm, requireContext())
                     launchImageCrop(imageUri)
                 }
@@ -190,24 +220,18 @@ class DetectionFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when(requestCode) {
-
             WRITE_EXTERNAL_STORAGE_CODE -> {
-
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-
-                } else {
+                }
+                else {
                     Toast.makeText(activity, "Enable permissions", Toast.LENGTH_SHORT).show()
                 }
-
             }
         }
     }
 
     private fun saveEditedImage() {
         bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, finalUri)
-//        processImage()
-//        saveMediaToStorage(bitmap!!)
     }
 
 
@@ -243,8 +267,6 @@ class DetectionFragment : Fragment() {
     }
 
     private fun pickFromCamera(){
-//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//        activityResultLauncher.launch(intent)
         val intent = Intent(activity, CameraActivity::class.java)
         launcherIntentCameraX.launch(intent)
     }
@@ -285,9 +307,7 @@ class DetectionFragment : Fragment() {
                     .addOnFailureListener { e ->
                     }
             }
-
         }
-
         else{
             Toast.makeText(activity, "Please select photo", Toast.LENGTH_SHORT).show()
         }
@@ -317,11 +337,8 @@ class DetectionFragment : Fragment() {
     }
 
     private fun launchImageCrop(uri: Uri) {
-
-
-        var destination:String=StringBuilder(UUID.randomUUID().toString()).toString()
-        var options:UCrop.Options=UCrop.Options()
-
+        var destination:String = StringBuilder(UUID.randomUUID().toString()).toString()
+        var options:UCrop.Options = UCrop.Options()
 
         context?.let {
             UCrop.of(Uri.parse(uri.toString()), Uri.fromFile(File(activity?.cacheDir,destination)))
@@ -355,6 +372,57 @@ class DetectionFragment : Fragment() {
             Manifest.permission.CAMERA
         )
         requestPermissions(listPermission, 100)
+    }
+
+    private fun postDetection(text: String) {
+        showLoading(true)
+
+        val client = ApiConfig.getApiService().postDetection(DetectionPost(text))
+        client.enqueue(object : Callback<DetectionResponse> {
+            override fun onResponse(
+                call: Call<DetectionResponse>,
+                response: Response<DetectionResponse>
+            ) {
+                showLoading(false)
+                val responseBody = response.body()
+
+                println("response.isSuccessful ${response.isSuccessful}")
+                println("isi dari responseBody $responseBody")
+
+                if (response.isSuccessful && responseBody != null) {
+                    setResultData(responseBody.result)
+                } else {
+                    Log.e(ContentValues.TAG, "onFailure: ${response.message()}")
+                }
+            }
+            override fun onFailure(call: Call<DetectionResponse>, t: Throwable) {
+                showLoading(false)
+                Log.e(ContentValues.TAG, "onFailure: ${t.message}")
+            }
+        })
+    }
+
+    private fun setResultData(data : com.example.safebitecapstone.API.Result){
+        val ingridient = binding.resultScan.text
+        val intent = Intent(activity, DetailScanActivity::class.java)
+
+        val titleScan = binding.editText.text.toString()
+        intent.putExtra(DetailScanActivity.EXTRA_TITLE, titleScan)
+        intent.putExtra(DetailScanActivity.EXTRA_IMG, finalUri)
+        intent.putExtra(DetailScanActivity.EXTRA_HALAL, data.halalHaramPrediction)
+        intent.putExtra(DetailScanActivity.EXTRA_ALLERGY, data.allergiesPrediction)
+        intent.putExtra(DetailScanActivity.EXTRA_DISEASE, data.diseasesPrediction)
+        intent.putExtra(DetailScanActivity.EXTRA_INGRIDIENT, ingridient.toString())
+
+        startActivity(intent)
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
+        }
     }
 
 }

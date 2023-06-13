@@ -14,6 +14,9 @@ class Detection (
     @ColumnInfo(name = "id")
     var id: Int = 0,
 
+    @ColumnInfo(name = "name")
+    var name: String? = null,
+
     @ColumnInfo(name = "timestamp")
     var timestamp: String? = null,
 
