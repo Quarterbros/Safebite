@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -52,9 +53,6 @@ class DetectionFragment : Fragment() {
 
     companion object {
         const val CAMERA_X_RESULT = 200
-
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private const val REQUEST_CODE_PERMISSIONS = 10
     }
 
     private val GALLERY_REQUEST_CODE = 1234
@@ -115,9 +113,6 @@ class DetectionFragment : Fragment() {
         }
 
 
-
-        binding.editText.setText("Hai")
-
         binding.editText.addTextChangedListener(object  : TextWatcher{
             override fun beforeTextChanged(title: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -127,11 +122,11 @@ class DetectionFragment : Fragment() {
             override fun onTextChanged(title: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 println("value title ${title!!.isNotEmpty()} + panjangnya ${title.length}")
 
-                if (title!!.isNotEmpty()){
+                if (title.isNotEmpty()){
                     binding.buttonProcess.isEnabled = true
 
                     binding.buttonProcess.setOnClickListener {
-                        val ingridient = binding.resultScan.text
+                        val ingridient = binding.editTextIngridients.text
                         postDetection(ingridient.toString())
                     }
                 }
@@ -156,11 +151,34 @@ class DetectionFragment : Fragment() {
 
             binding.buttonPhoto.visibility = View.VISIBLE
             binding.buttonGallery.visibility = View.VISIBLE
+//            binding.buttonProcess.visibility = View.GONE
+            binding.resultScan.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
+            binding.loadingInformation.visibility = View.GONE
+            binding.titleEdittext.visibility = View.GONE
+            binding.titleEdittextIngridients.visibility = View.GONE
+            binding.editText.visibility = View.GONE
+            binding.editTextIngridients.visibility = View.GONE
+            binding.photoPlaceholder.setImageResource(R.drawable.img_placeholder)
+        }
+
+        binding.buttonCancelProcess.setOnClickListener {
+            binding.buttonDetect.visibility = View.GONE
+            binding.buttonCancelProcess.visibility = View.GONE
+
+
+            binding.buttonPhoto.visibility = View.VISIBLE
+            binding.buttonGallery.visibility = View.VISIBLE
             binding.buttonProcess.visibility = View.GONE
             binding.resultScan.visibility = View.GONE
             binding.progressBar.visibility = View.GONE
             binding.loadingInformation.visibility = View.GONE
+            binding.titleEdittext.visibility = View.GONE
+            binding.titleEdittextIngridients.visibility = View.GONE
             binding.editText.visibility = View.GONE
+            binding.editTextIngridients.visibility = View.GONE
+            binding.titleEdittext.visibility = View.GONE
+            binding.titleEdittextIngridients.visibility = View.GONE
             binding.photoPlaceholder.setImageResource(R.drawable.img_placeholder)
         }
 
@@ -172,9 +190,16 @@ class DetectionFragment : Fragment() {
                 if (result?.isEmpty() != true){
                     binding.buttonProcess.isEnabled = false
                     binding.editText.visibility = View.VISIBLE
+                    binding.editTextIngridients.visibility = View.VISIBLE
+                    binding.titleEdittext.visibility = View.VISIBLE
+                    binding.titleEdittextIngridients.visibility = View.VISIBLE
                     binding.progressBar.visibility = View.GONE
                     binding.buttonProcess.visibility = View.VISIBLE
+                    binding.buttonCancel.visibility = View.GONE
+                    binding.buttonCancelProcess.visibility = View.VISIBLE
                     binding.loadingInformation.visibility = View.GONE
+
+                    binding.editTextIngridients.setText(binding.resultScan.text)
                 }
                 else{
                     binding.progressBar.visibility = View.VISIBLE
@@ -187,18 +212,18 @@ class DetectionFragment : Fragment() {
         activityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
                 if (result.resultCode == AppCompatActivity.RESULT_OK) {
-                    var extras: Bundle? = result.data?.extras
-                    var imageUri: Uri
-                    var imageBitmap = extras?.get("data") as Bitmap
+                    val extras: Bundle? = result.data?.extras
+                    val imageUri: Uri
+                    val imageBitmap = extras?.get("data") as Bitmap
 
-                    var imageResult: WeakReference<Bitmap> = WeakReference(
+                    val imageResult: WeakReference<Bitmap> = WeakReference(
                         Bitmap.createScaledBitmap(
                             imageBitmap, imageBitmap.width, imageBitmap.height, false
                         ).copy(
                             Bitmap.Config.RGB_565, true
                         )
                     )
-                    var bm = imageResult.get()
+                    val bm = imageResult.get()
                     imageUri = saveImage(bm, requireContext())
                     launchImageCrop(imageUri)
                 }
@@ -283,13 +308,11 @@ class DetectionFragment : Fragment() {
                 it.data?.getSerializableExtra("picture")
             } as? File
 
-//            val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
 
             myFile?.let { file ->
+                rotateFile(file, true)
                 var imageUri: Uri = saveImage(BitmapFactory.decodeFile(file.path), requireContext())
                 launchImageCrop(imageUri)
-//                    rotateFile(file, isBackCamera)
-//                binding.photoPlaceholder.setImageBitmap(BitmapFactory.decodeFile(file.path))
             }
         }
     }
@@ -329,10 +352,10 @@ class DetectionFragment : Fragment() {
             val resultUri :Uri ?= UCrop.getOutput(data!!)
             setImage(resultUri!!)
             finalUri=resultUri
-            binding.buttonDetect.visibility= View.VISIBLE
-            binding.buttonCancel.visibility=View.VISIBLE
-            binding.buttonPhoto.visibility=View.GONE
-            binding.buttonGallery.visibility=View.GONE
+            binding.buttonDetect.visibility = View.VISIBLE
+            binding.buttonCancel.visibility = View.VISIBLE
+            binding.buttonPhoto.visibility = View.GONE
+            binding.buttonGallery.visibility = View.GONE
         }
     }
 
@@ -403,16 +426,16 @@ class DetectionFragment : Fragment() {
     }
 
     private fun setResultData(data : com.example.safebitecapstone.API.Result){
-        val ingridient = binding.resultScan.text
         val intent = Intent(activity, DetailScanActivity::class.java)
 
         val titleScan = binding.editText.text.toString()
+        val ingridientEdited = binding.editTextIngridients.text.toString()
         intent.putExtra(DetailScanActivity.EXTRA_TITLE, titleScan)
         intent.putExtra(DetailScanActivity.EXTRA_IMG, finalUri)
         intent.putExtra(DetailScanActivity.EXTRA_HALAL, data.halalHaramPrediction)
         intent.putExtra(DetailScanActivity.EXTRA_ALLERGY, data.allergiesPrediction)
         intent.putExtra(DetailScanActivity.EXTRA_DISEASE, data.diseasesPrediction)
-        intent.putExtra(DetailScanActivity.EXTRA_INGRIDIENT, ingridient.toString())
+        intent.putExtra(DetailScanActivity.EXTRA_INGRIDIENT, ingridientEdited)
 
         startActivity(intent)
     }
@@ -423,6 +446,18 @@ class DetectionFragment : Fragment() {
         } else {
             binding.progressBar.visibility = View.GONE
         }
+    }
+
+    private fun rotateFile(file: File, isBackCamera: Boolean = false) {
+        val matrix = Matrix()
+        val bitmap = BitmapFactory.decodeFile(file.path)
+        val rotation = if (isBackCamera) 90f else -90f
+        matrix.postRotate(rotation)
+        if (!isBackCamera) {
+            matrix.postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
+        }
+        val result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        result.compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(file))
     }
 
 }

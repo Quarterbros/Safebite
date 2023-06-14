@@ -41,9 +41,9 @@ class HistoryFragment : Fragment() {
         super.onResume()
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
 
-        binding?.historyItems?.layoutManager = LinearLayoutManager(requireContext())
-        binding?.historyItems?.setHasFixedSize(true)
-        binding?.historyItems?.adapter = adapter
+        binding.historyItems?.layoutManager = LinearLayoutManager(requireContext())
+        binding.historyItems?.setHasFixedSize(true)
+        binding.historyItems?.adapter = adapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,9 +68,9 @@ class HistoryFragment : Fragment() {
         }
 
 
-        binding?.historyItems?.layoutManager = LinearLayoutManager(requireContext())
-        binding?.historyItems?.setHasFixedSize(true)
-        binding?.historyItems?.adapter = adapter
+        binding.historyItems?.layoutManager = LinearLayoutManager(requireContext())
+        binding.historyItems?.setHasFixedSize(true)
+        binding.historyItems?.adapter = adapter
     }
 
 

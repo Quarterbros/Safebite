@@ -58,21 +58,19 @@ class HomeFragment : Fragment() {
 
         auth = Firebase.auth
 
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setMessage("Are you sure to log out ?")
-            .setPositiveButton("Log Out",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // START THE GAME!
-                    signOut()
-                    dialog.dismiss()
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                    dialog.cancel()
-                })
-        // Create the AlertDialog object and return it
-        builder.create()
+//        val builder = AlertDialog.Builder(requireContext())
+//        builder.setMessage("Are you sure to log out ?")
+//            .setPositiveButton("Log Out",
+//                DialogInterface.OnClickListener { dialog, id ->
+//                    signOut()
+//                    dialog.dismiss()
+//                })
+//            .setNegativeButton("Cancel",
+//                DialogInterface.OnClickListener { dialog, id ->
+//                    dialog.cancel()
+//                })
+//        // Create the AlertDialog object and return it
+//        builder.create()
 
 
         binding.logoutButton.setOnClickListener {
@@ -80,22 +78,24 @@ class HomeFragment : Fragment() {
             builder.setMessage("Are you sure to log out ?")
                 .setPositiveButton("Log Out",
                     DialogInterface.OnClickListener { dialog, id ->
-                        // START THE GAME!
                         signOut()
                         mainViewModel.logout()
                         dialog.dismiss()
                     })
                 .setNegativeButton("Cancel",
                     DialogInterface.OnClickListener { dialog, id ->
-                        // User cancelled the dialog
                         dialog.cancel()
                     })
-            // Create the AlertDialog object and return it
             builder.create().show()
         }
 
         binding.buttonHowItWork.setOnClickListener {
             val intent = Intent(activity, HowItWorksActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.buttonMoreInfo.setOnClickListener {
+            val intent = Intent(activity, AboutActivity::class.java)
             startActivity(intent)
         }
 

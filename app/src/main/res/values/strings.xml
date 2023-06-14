@@ -5,7 +5,7 @@
     <string name="email_placeholder">Insert Your Email</string>
     <string name="login">Login</string>
     <string name="password_placeholder">Insert Your Password</string>
-    <string name="welcome_text">Welcome to SafeBite</string>
+    <string name="welcome_text">Welcome</string>
     <string name="new_user">New User ?</string>
     <string name="register_here">Sign Up Here</string>
     <string name="register_text">Sign Up New Account</string>

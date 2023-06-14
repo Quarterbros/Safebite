@@ -30,9 +30,6 @@ class DetailScanActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-//        supportActionBar?.title = "Detail $dataTitle"
-
-
         val img : Uri? = intent.getParcelableExtra(EXTRA_IMG)
         binding.photoDetail.setImageURI(img)
 
@@ -73,9 +70,6 @@ class DetailScanActivity : AppCompatActivity() {
             }
             if (detection != null){
                 detectionDataLocalViewModel.insert(detection as Detection)
-//                postDetection(binding.ingridientDesc.text.toString())
-//                detectionDataLocalViewModel.insert(detection as Detection)
-//                postDetection("car")
             }
         }
 
@@ -84,11 +78,11 @@ class DetailScanActivity : AppCompatActivity() {
             detection.let {
                 supportActionBar?.title = "Detail ${detection!!.name}"
                 binding.photoDetail.setImageResource(R.drawable.baseline_fastfood_24)
-                binding?.hallalDesc?.setText(detection!!.hallal)
-                binding?.allergiesDesc?.setText(detection!!.potentialAllergies)
-                binding?.diseaseDesc?.setText(detection!!.potentialDisease)
-                binding?.ingridientDesc?.setText(detection!!.ingridient)
-                binding?.timestampDesc?.setText(detection!!.timestamp)
+                binding.hallalDesc?.text = detection!!.hallal
+                binding.allergiesDesc?.text = detection!!.potentialAllergies
+                binding.diseaseDesc?.text = detection!!.potentialDisease
+                binding.ingridientDesc?.text = detection!!.ingridient
+                binding.timestampDesc?.setText(detection!!.timestamp)
             }
         }
 
@@ -103,34 +97,6 @@ class DetailScanActivity : AppCompatActivity() {
         binding.timestampDesc.text = current
     }
 
-//    private fun postDetection(text: String) {
-//        showLoading(true)
-//
-//        val client = ApiConfig.getApiService().postDetection(DetectionPost(text))
-//        client.enqueue(object : Callback<DetectionResponse> {
-//            override fun onResponse(
-//                call: Call<DetectionResponse>,
-//                response: Response<DetectionResponse>
-//            ) {
-//                showLoading(false)
-//                val responseBody = response.body()
-//
-//                println("response.isSuccessful ${response.isSuccessful}")
-//                println("isi dari responseBody $responseBody")
-//
-//                if (response.isSuccessful && responseBody != null) {
-//                    setResultData(responseBody.result)
-//                } else {
-//                    Log.e(ContentValues.TAG, "onFailure: ${response.message()}")
-//                }
-//            }
-//            override fun onFailure(call: Call<DetectionResponse>, t: Throwable) {
-//                showLoading(false)
-//                Log.e(ContentValues.TAG, "onFailure: ${t.message}")
-//            }
-//        })
-//    }
-
     private fun setResultData(valueHalal: String, valueAllergy: String, valueDisease: String) {
         if (valueHalal == "Halal"){
             binding.hallalDesc.text = "Yes, it's Hallal"
@@ -144,17 +110,6 @@ class DetailScanActivity : AppCompatActivity() {
         binding.allergiesDesc.text = valueAllergy
         binding.diseaseDesc.text = valueDisease
     }
-
-//    private fun showLoading(isLoading: Boolean) {
-//        if (isLoading) {
-//            binding.progressBar.visibility = View.VISIBLE
-//        } else {
-//            binding.progressBar.visibility = View.GONE
-//        }
-//    }
-
-
-
 
     companion object {
         var EXTRA_INGRIDIENT = "extra_ingridient"
