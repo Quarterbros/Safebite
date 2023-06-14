@@ -34,25 +34,21 @@ class DetailScanActivity : AppCompatActivity() {
         binding.photoDetail.setImageURI(img)
 
         val ingridientData = intent.getStringExtra(EXTRA_INGRIDIENT)
-        println("Nilai ingridientData " + ingridientData.toString())
 
-        val stringBuilder = ingridientData?.replace("\\s".toRegex(), ", ")
-
-        println("Ingridients : $stringBuilder")
+        val stringBuilder = ingridientData?.replace(Regex("ingredients", RegexOption.IGNORE_CASE), "")
 
 
-        var dataHalal = intent.getStringExtra(EXTRA_HALAL)
-        var dataDisease = intent.getStringExtra(EXTRA_DISEASE)
-        var dataAllergy = intent.getStringExtra(EXTRA_ALLERGY)
-        var dataTitle = intent.getStringExtra(EXTRA_TITLE)
+        val dataHalal = intent.getStringExtra(EXTRA_HALAL)
+        val dataDisease = intent.getStringExtra(EXTRA_DISEASE)
+        val dataAllergy = intent.getStringExtra(EXTRA_ALLERGY)
+        val dataTitle = intent.getStringExtra(EXTRA_TITLE)
 
 
         detection = intent.getParcelableExtra(EXTRA_DATA)
-        println("Cek is null $detection")
 
         if (detection == null){
             detection = Detection()
-            binding.ingridientDesc.text = stringBuilder
+            binding.ingridientDesc.text = stringBuilder.toString()
             supportActionBar?.title = "Detail $dataTitle"
 
             if (dataHalal != null && dataDisease != null && dataAllergy != null){
@@ -78,11 +74,11 @@ class DetailScanActivity : AppCompatActivity() {
             detection.let {
                 supportActionBar?.title = "Detail ${detection!!.name}"
                 binding.photoDetail.setImageResource(R.drawable.baseline_fastfood_24)
-                binding.hallalDesc?.text = detection!!.hallal
-                binding.allergiesDesc?.text = detection!!.potentialAllergies
-                binding.diseaseDesc?.text = detection!!.potentialDisease
-                binding.ingridientDesc?.text = detection!!.ingridient
-                binding.timestampDesc?.setText(detection!!.timestamp)
+                binding.hallalDesc.text = detection!!.hallal
+                binding.allergiesDesc.text = detection!!.potentialAllergies
+                binding.diseaseDesc.text = detection!!.potentialDisease
+                binding.ingridientDesc.text = detection!!.ingridient
+                binding.timestampDesc.setText(detection!!.timestamp)
             }
         }
 

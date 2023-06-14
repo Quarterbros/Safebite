@@ -126,8 +126,9 @@ class DetectionFragment : Fragment() {
                     binding.buttonProcess.isEnabled = true
 
                     binding.buttonProcess.setOnClickListener {
-                        val ingridient = binding.editTextIngridients.text
-                        postDetection(ingridient.toString())
+                        val ingridient = binding.editTextIngridients.text.toString()
+                        println("edittext : $ingridient")
+                        postDetection(ingridient)
                     }
                 }
 
@@ -151,7 +152,6 @@ class DetectionFragment : Fragment() {
 
             binding.buttonPhoto.visibility = View.VISIBLE
             binding.buttonGallery.visibility = View.VISIBLE
-//            binding.buttonProcess.visibility = View.GONE
             binding.resultScan.visibility = View.GONE
             binding.progressBar.visibility = View.GONE
             binding.loadingInformation.visibility = View.GONE
@@ -310,7 +310,7 @@ class DetectionFragment : Fragment() {
 
 
             myFile?.let { file ->
-                rotateFile(file, true)
+//                rotateFile(file, true)
                 var imageUri: Uri = saveImage(BitmapFactory.decodeFile(file.path), requireContext())
                 launchImageCrop(imageUri)
             }
@@ -411,10 +411,13 @@ class DetectionFragment : Fragment() {
 
                 println("response.isSuccessful ${response.isSuccessful}")
                 println("isi dari responseBody $responseBody")
+                println("Yang dikirim $text")
+                println("Yang dikirim class ${DetectionPost(text)}")
 
                 if (response.isSuccessful && responseBody != null) {
                     setResultData(responseBody.result)
                 } else {
+                    Toast.makeText(requireContext(), "Server error, please try again", Toast.LENGTH_SHORT).show()
                     Log.e(ContentValues.TAG, "onFailure: ${response.message()}")
                 }
             }
@@ -448,16 +451,16 @@ class DetectionFragment : Fragment() {
         }
     }
 
-    private fun rotateFile(file: File, isBackCamera: Boolean = false) {
-        val matrix = Matrix()
-        val bitmap = BitmapFactory.decodeFile(file.path)
-        val rotation = if (isBackCamera) 90f else -90f
-        matrix.postRotate(rotation)
-        if (!isBackCamera) {
-            matrix.postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
-        }
-        val result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-        result.compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(file))
-    }
+//    private fun rotateFile(file: File, isBackCamera: Boolean = false) {
+//        val matrix = Matrix()
+//        val bitmap = BitmapFactory.decodeFile(file.path)
+//        val rotation = if (isBackCamera) 90f else -90f
+//        matrix.postRotate(rotation)
+//        if (!isBackCamera) {
+//            matrix.postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
+//        }
+//        val result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+//        result.compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(file))
+//    }
 
 }
