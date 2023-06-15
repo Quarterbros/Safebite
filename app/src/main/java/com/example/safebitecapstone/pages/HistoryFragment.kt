@@ -18,6 +18,7 @@ import com.example.safebitecapstone.databinding.FragmentHistoryBinding
 import com.example.safebitecapstone.databinding.FragmentHomeBinding
 import com.example.safebitecapstone.dummyData.Alergen
 import com.example.safebitecapstone.helper.HistoryAdapter
+import com.example.safebitecapstone.model.DetectionDataLocalViewModel
 import com.example.safebitecapstone.model.HistoryViewModel
 import com.example.safebitecapstone.model.MainViewModel
 import com.example.safebitecapstone.model.factory.HistoryViewModelFactory
@@ -31,6 +32,12 @@ class HistoryFragment : Fragment() {
     private val historyViewModel: HistoryViewModel by viewModels {
         HistoryViewModelFactory.getInstance(requireActivity().application)
     }
+
+    private val dataLocalViewModel: DetectionDataLocalViewModel by viewModels {
+        HistoryViewModelFactory.getInstance(requireActivity().application)
+    }
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHistoryBinding.inflate(inflater, container, false)
@@ -49,19 +56,16 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = HistoryAdapter()
+        adapter = HistoryAdapter(dataLocalViewModel)
         binding.historyItems.visibility = View.VISIBLE
         binding.noDetectionText.visibility = View.GONE
         historyViewModel.getAllDetection().observe(viewLifecycleOwner){items ->
             if(items.isNotEmpty()){
-                println("nilai dari items : $items")
-
                 binding.historyItems.visibility = View.VISIBLE
                 binding.noDetectionText.visibility = View.GONE
                 adapter.setListDetection(items)
             }
             else{
-                println("Kosong")
                 binding.historyItems.visibility = View.GONE
                 binding.noDetectionText.visibility = View.VISIBLE
             }

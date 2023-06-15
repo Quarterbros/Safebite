@@ -43,7 +43,6 @@ class DetailScanActivity : AppCompatActivity() {
         val dataAllergy = intent.getStringExtra(EXTRA_ALLERGY)
         val dataTitle = intent.getStringExtra(EXTRA_TITLE)
 
-
         detection = intent.getParcelableExtra(EXTRA_DATA)
 
         if (detection == null){
@@ -52,7 +51,7 @@ class DetailScanActivity : AppCompatActivity() {
             supportActionBar?.title = "Detail $dataTitle"
 
             if (dataHalal != null && dataDisease != null && dataAllergy != null){
-                setResultData(dataHalal, dataDisease, dataAllergy)
+                setResultData(dataHalal, dataAllergy, dataDisease)
             }
             dateScanned()
 

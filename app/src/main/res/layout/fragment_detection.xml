@@ -193,7 +193,7 @@
             android:hint="@string/enter_title_for_detection"
             android:imeOptions="actionDone"
             android:inputType="text"
-            android:maxLength="50"
+            android:maxLength="25"
             android:maxLines="1"
             android:textColorHint="@color/border_grey"
             android:visibility="gone"

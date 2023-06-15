@@ -120,14 +120,11 @@ class DetectionFragment : Fragment() {
             }
 
             override fun onTextChanged(title: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                println("value title ${title!!.isNotEmpty()} + panjangnya ${title.length}")
-
-                if (title.isNotEmpty()){
+                if (title!!.isNotEmpty()){
                     binding.buttonProcess.isEnabled = true
 
                     binding.buttonProcess.setOnClickListener {
                         val ingridient = binding.editTextIngridients.text.toString()
-                        println("edittext : $ingridient")
                         postDetection(ingridient)
                     }
                 }
@@ -261,17 +258,16 @@ class DetectionFragment : Fragment() {
 
 
     private fun saveImage(image: Bitmap?, context: Context): Uri {
-        var imageFolder= File(context.cacheDir,"images")
+        val imageFolder= File(context.cacheDir,"images")
         var uri: Uri? = null
 
         try {
             imageFolder.mkdirs()
-            var file: File = File(imageFolder,"captured_image.png")
-            var stream: FileOutputStream = FileOutputStream(file)
+            val file: File = File(imageFolder,"captured_image.png")
+            val stream: FileOutputStream = FileOutputStream(file)
             image?.compress(Bitmap.CompressFormat.JPEG,100,stream)
             stream.flush()
             stream.close()
-//            uri= FileProvider.getUriForFile(context.applicationContext,"com.sunayanpradhan.imagecropper"+".provider",file)
             uri= FileProvider.getUriForFile(requireContext().applicationContext,"com.example.safebitecapstone.provider",file)
 
         } catch (e: FileNotFoundException) {
@@ -310,8 +306,7 @@ class DetectionFragment : Fragment() {
 
 
             myFile?.let { file ->
-//                rotateFile(file, true)
-                var imageUri: Uri = saveImage(BitmapFactory.decodeFile(file.path), requireContext())
+                val imageUri: Uri = saveImage(BitmapFactory.decodeFile(file.path), requireContext())
                 launchImageCrop(imageUri)
             }
         }
@@ -360,8 +355,8 @@ class DetectionFragment : Fragment() {
     }
 
     private fun launchImageCrop(uri: Uri) {
-        var destination:String = StringBuilder(UUID.randomUUID().toString()).toString()
-        var options:UCrop.Options = UCrop.Options()
+        val destination:String = StringBuilder(UUID.randomUUID().toString()).toString()
+        val options:UCrop.Options = UCrop.Options()
 
         context?.let {
             UCrop.of(Uri.parse(uri.toString()), Uri.fromFile(File(activity?.cacheDir,destination)))
@@ -409,15 +404,10 @@ class DetectionFragment : Fragment() {
                 showLoading(false)
                 val responseBody = response.body()
 
-                println("response.isSuccessful ${response.isSuccessful}")
-                println("isi dari responseBody $responseBody")
-                println("Yang dikirim $text")
-                println("Yang dikirim class ${DetectionPost(text)}")
-
                 if (response.isSuccessful && responseBody != null) {
                     setResultData(responseBody.result)
                 } else {
-                    Toast.makeText(requireContext(), "Server error, please try again", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Server error, please try again later", Toast.LENGTH_SHORT).show()
                     Log.e(ContentValues.TAG, "onFailure: ${response.message()}")
                 }
             }
@@ -450,17 +440,4 @@ class DetectionFragment : Fragment() {
             binding.progressBar.visibility = View.GONE
         }
     }
-
-//    private fun rotateFile(file: File, isBackCamera: Boolean = false) {
-//        val matrix = Matrix()
-//        val bitmap = BitmapFactory.decodeFile(file.path)
-//        val rotation = if (isBackCamera) 90f else -90f
-//        matrix.postRotate(rotation)
-//        if (!isBackCamera) {
-//            matrix.postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
-//        }
-//        val result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-//        result.compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(file))
-//    }
-
 }
