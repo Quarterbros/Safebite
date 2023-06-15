@@ -15,5 +15,6 @@
     <color name="white_ascent">#F0F2FC</color>
     <color name="blue_link">#2196F3</color>
     <color name="blue_icon">#0D3380</color>
+    <color name="background_home">#F6F6F6</color>
 
 </resources>

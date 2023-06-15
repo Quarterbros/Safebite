@@ -17,16 +17,26 @@
         android:theme="@style/Theme.SafeBiteCapstone"
         tools:targetApi="31">
         <activity
-            android:name=".CameraActivity"
-            android:exported="false" />
+            android:name=".pages.SplashScreen"
+            android:exported="true"
+            android:launchMode="singleTop">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
         <activity
-            android:name=".AddAlergenActivity"
-            android:exported="false" />
+            android:name=".pages.HowItWorksActivity"
+            android:exported="false"
+            android:parentActivityName=".pages.MainActivity" />
         <activity
-            android:name=".pages.DetailAlergenActivity"
-            android:exported="false" />
+            android:name=".pages.AboutActivity"
+            android:exported="false"
+            android:parentActivityName=".pages.MainActivity"/>
         <activity
-            android:name=".pages.EditHalalActivity"
+            android:name=".pages.CameraActivity"
             android:exported="false" />
         <activity
             android:name=".pages.DetailScanActivity"
@@ -37,26 +47,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".pages.EditAlergenActivity"
-            android:exported="false" />
-        <activity
             android:name=".pages.LoginActivity"
             android:exported="true">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".pages.MainActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        </activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity> <!-- fix error couldn't find meta-data -->
+        <!-- fix error couldn't find meta-data -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.safebitecapstone.provider"
@@ -64,7 +63,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/fileproviderpaths"></meta-data>
+                android:resource="@xml/fileproviderpaths" />
         </provider>
     </application>
 

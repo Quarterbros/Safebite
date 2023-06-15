@@ -5,7 +5,7 @@
     <string name="email_placeholder">Insert Your Email</string>
     <string name="login">Login</string>
     <string name="password_placeholder">Insert Your Password</string>
-    <string name="welcome_text">Welcome to SafeBite</string>
+    <string name="welcome_text">Welcome</string>
     <string name="new_user">New User ?</string>
     <string name="register_here">Sign Up Here</string>
     <string name="register_text">Sign Up New Account</string>
@@ -24,6 +24,35 @@
 
 
     <string name="default_web_client_id">748801823602-u9tlfjcmhhf9j6teobo2amgv6to6u4g7.apps.googleusercontent.com</string>
+    <string name="more_information">More Information</string>
+    <string name="about">About</string>
+    <string name="how_it_works">How it works ?</string>
+    <string name="name">Name</string>
+    <string name="detection_history">Detection History</string>
+    <string name="it_seems_you_don_t_have_any_detection_history">It seems you don\'t have any detection history</string>
+    <string name="detect_ingridients">Detect Ingridients</string>
+    <string name="analyzing_ingridient">Analyzing Ingridient . . .</string>
+    <string name="pick_from_gallery">Pick From Gallery</string>
+    <string name="detect">Detect</string>
+    <string name="cancel">Cancel</string>
+    <string name="detection_title">Detection Title</string>
+    <string name="enter_title_for_detection">Enter title for detection</string>
+    <string name="ingridient_detected_edit_if_needed">Ingridient Detected (Edit if needed)</string>
+    <string name="edit_detected_ingridients_text">Edit detected ingridients text</string>
+    <string name="process">Process</string>
+    <string name="title_safebite">Avoiding Food is Easier Now</string>
+    <string name="desc_safebite">Detect ingridient of your food and \nlet us inform to you if the products is safe for you</string>
+    <string name="login_info_google">Sign in with your existing Google Account</string>
+    <string name="title_hiw">How our app can detect hallal, \n potential diseases and potential allergies ?</string>
+    <string name="desc_hiw">We have dataset collected by Machine \nLearning team and model that can learn\nfrom user input. After SafeBite app detect\nsome ingredients from Scan Feature, SafeBite\napp will ask the model to learn the user input\nand return information about hallal, potential\ndiseases and potential allergies based on\ningredients detected. But due to dataset\nlimitation, not all ingredients can be identified.</string>
+    <string name="hallal_identification">Hallal Identification</string>
+    <string name="potential_allergies">Potential Allergies</string>
+    <string name="null_text">null</string>
+    <string name="potential_disease">Potential Disease</string>
+    <string name="ingridients_detected">Ingridients Detected</string>
+    <string name="scanned_in">Scanned In</string>
+    <string name="about_this_app">About This App</string>
+    <string name="about_desc">SafeBite developed to answer existing problems\n that make people in distress when avoiding\nsome ingridients out there due to allergies, disease\nor hallal resctrictions</string>
 
     <string-array name="data_title">
         <item>Alergen Name</item>
