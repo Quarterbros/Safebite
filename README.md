@@ -20,6 +20,9 @@ This is the repository for Mobile Development Part Repository. "main" branch is 
 - androidx.camera:camera-camera2
 *See build.gradle to see all the library used in this project* 
 
+# Notes :
+- Change google-services.json inside the file to run it with your IDE
+- Change the requestIdToken inside the LoginActivity with your own
 
 ## Contributor :
 - Muhammad Arya Adirianto | A181DSX1144
