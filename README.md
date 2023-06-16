@@ -1,15 +1,15 @@
-## Safebite Mobile Development Part Repository
+# Safebite Mobile Development Part Repository
 
 This is the repository for Mobile Development Part Repository. "main" branch is the stable version of the app
 
 
-# Feature :
+## Feature :
 - Sign in/Sign up using Google Auth
 - Detection Feature
 - Detail Scanned Result
 - History Scanned Data
 
-# Some library used in this project :
+## Some library used in this project :
 - com.github.yalantis:ucrop:2.2.6
 - com.google.android.gms:play-services-mlkit-text-recognition:18.0.2
 - com.github.bumptech.glide:glide:4.12.0
@@ -20,5 +20,5 @@ This is the repository for Mobile Development Part Repository. "main" branch is 
 - androidx.camera:camera-camera2
 
 
-# Contributor :
+## Contributor :
 - Muhammad Arya Adirianto | A181DSX1144
