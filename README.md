@@ -18,6 +18,7 @@ This is the repository for Mobile Development Part Repository. "main" branch is 
 - com.squareup.retrofit2:retrofit:2.9.0
 - com.squareup.retrofit2:converter-gson
 - androidx.camera:camera-camera2
+*See build.gradle to see all the library used in this project* 
 
 
 ## Contributor :
